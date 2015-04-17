@@ -1,0 +1,25 @@
+﻿<Page
+    x:Class="RobotApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RobotApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" KeyDown="Background_KeyDown_1" KeyUp="Background_KeyUp_1">
+        <Button Content="       ^&#xD;&#xA;FORWARD (W)" HorizontalAlignment="Left" Background="Black" Foreground="White" Margin="246,42,0,0" VerticalAlignment="Top" Click="Forward_Click" Height="126" Width="194" FontSize="20" />
+        <Button Content="&lt;--   LEFT (A)" HorizontalAlignment="Left" Background="Black" Foreground="White" Margin="52,167,0,0" VerticalAlignment="Top" Click="Left_Click" Height="139" Width="194" FontSize="20"/>
+        <Button Content="RIGHT (D) --&gt;" HorizontalAlignment="Left" Background="Black" Foreground="White" Margin="439,165,0,0" VerticalAlignment="Top" Click="Right_Click" Height="139" Width="194" FontSize="20"/>
+        <Button Content="BACKWARD (X)&#xD;&#xA;         V" HorizontalAlignment="Left" Background="Black" Foreground="White" Margin="246,301,0,0" VerticalAlignment="Top" Click="Backward_Click" Height="129" Width="194" FontSize="20"/>
+        <Button Content="Forward Right (E)" HorizontalAlignment="Left" Background="Black" Foreground="White" Margin="472,42,0,0" VerticalAlignment="Top" Height="91" Width="161" Click="ForwardRight_Click" FontSize="18"/>
+        <Button Content="Forward Left (Q)" HorizontalAlignment="Left" Background="Black" Foreground="White" Margin="52,42,0,0" VerticalAlignment="Top" Height="91" Width="162" Click="ForwardLeft_Click" RenderTransformOrigin="0.536,0.703" FontSize="18"/>
+        <Button Content="Back Left (Z)" HorizontalAlignment="Left" Background="Black" Foreground="White" Margin="52,338,0,0" VerticalAlignment="Top" Height="92" Width="162" Click="BackwardLeft_Click" FontSize="18"/>
+        <Button Content="Back Right (C)" HorizontalAlignment="Left" Background="Black" Foreground="White" Margin="472,338,0,0" VerticalAlignment="Top" Height="92" Width="161" Click="BackwardRight_Click" FontSize="18"/>
+        <Button Content="STOP (S)" HorizontalAlignment="Left" Background="Red" Foreground="White" Margin="246,167,0,0" VerticalAlignment="Top" Height="135" Width="194" Click="Stop_Click" FontSize="20"/>
+        <TextBox Name="CurrentState" HorizontalAlignment="Left" Background="White" Foreground="Black" Margin="169,481,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="52" Width="350" FontSize="25" />
+        <TextBox Name="Connection" HorizontalAlignment="Left" Background="White" Foreground="Black" Margin="169,530,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="52" Width="350" FontSize="25" />
+        <Button Content="status" HorizontalAlignment="Left" Background="Blue" Foreground="White" Margin="169,590,0,0" VerticalAlignment="Top" Height="52" Width="350" Click="Status_Click" FontSize="20"/>
+        <Button Content="Switch Mode" HorizontalAlignment="Left" Background="Yellow" Foreground="Black" Margin="650,42,0,0" VerticalAlignment="Top" Height="91" Width="161" Click="SwitchMode_Click" FontSize="18"/>
+    </Grid>
+</Page>
