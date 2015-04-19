@@ -17,48 +17,39 @@ namespace RobotApp
         #region ----- on-screen click/touch controls -----
         private void Forward_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.SetRobotDirection(Controllers.CtrlCmds.Forward, (int)Controllers.CtrlSpeeds.Max);
-            UpdateClickStatus();
+            TouchDir(Controllers.CtrlCmds.Forward);
         }
         private void Left_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.SetRobotDirection(Controllers.CtrlCmds.Left, (int)Controllers.CtrlSpeeds.Max);
-            UpdateClickStatus();
+            TouchDir(Controllers.CtrlCmds.Left);
         }
         private void Right_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.SetRobotDirection(Controllers.CtrlCmds.Right, (int)Controllers.CtrlSpeeds.Max);
-            UpdateClickStatus();
+            TouchDir(Controllers.CtrlCmds.Right);
         }
         private void Backward_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.SetRobotDirection(Controllers.CtrlCmds.Backward, (int)Controllers.CtrlSpeeds.Max);
-            UpdateClickStatus();
+            TouchDir(Controllers.CtrlCmds.Backward);
         }
         private void ForwardLeft_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.SetRobotDirection(Controllers.CtrlCmds.ForwardLeft, (int)Controllers.CtrlSpeeds.Max);
-            UpdateClickStatus();
+            TouchDir(Controllers.CtrlCmds.ForwardLeft);
         }
         private void ForwardRight_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.SetRobotDirection(Controllers.CtrlCmds.ForwardRight, (int)Controllers.CtrlSpeeds.Max);
-            UpdateClickStatus();
+            TouchDir(Controllers.CtrlCmds.ForwardRight);
         }
         private void BackwardLeft_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.SetRobotDirection(Controllers.CtrlCmds.Backward, (int)Controllers.CtrlSpeeds.Max);
-            UpdateClickStatus();
+            TouchDir(Controllers.CtrlCmds.BackLeft);
         }
         private void BackwardRight_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.SetRobotDirection(Controllers.CtrlCmds.BackRight, (int)Controllers.CtrlSpeeds.Max);
-            UpdateClickStatus();
+            TouchDir(Controllers.CtrlCmds.BackRight);
         }
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
-            Controllers.SetRobotDirection(Controllers.CtrlCmds.Stop, (int)Controllers.CtrlSpeeds.Max);
-            UpdateClickStatus();
+            TouchDir(Controllers.CtrlCmds.Stop);
         }
         private void Status_Click(object sender, RoutedEventArgs e)
         {
@@ -69,20 +60,24 @@ namespace RobotApp
         {
             SwitchRunningMode();
         }
-
+        private void TouchDir (Controllers.CtrlCmds dir)
+        {
+            Controllers.FoundLocalControlsWorking = true;
+            Controllers.SetRobotDirection(dir, (int)Controllers.CtrlSpeeds.Max);
+            UpdateClickStatus();
+        }
 
         /// <summary>
         /// Virtual Key input handlers.  Keys directed here from XAML settings in MainPage.XAML
         /// </summary>
         private void Background_KeyDown_1(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-            Debug.WriteLine("KeyDown: \"" + e.Key.ToString() + "\"");
+            Debug.WriteLine("KeyDn: \"" + e.Key.ToString() + "\"");
             VKeyToRobotDirection(e.Key);
             UpdateClickStatus();
         }
         private void Background_KeyUp_1(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-            Debug.WriteLine ("KeyUp: \"" + e.Key.ToString() + "\"");
             VKeyToRobotDirection(Windows.System.VirtualKey.Enter);
             UpdateClickStatus();
         }
@@ -107,6 +102,7 @@ namespace RobotApp
                 case Windows.System.VirtualKey.Enter:
                 default: Controllers.SetRobotDirection(Controllers.CtrlCmds.Stop, (int)Controllers.CtrlSpeeds.Max); break;
             }
+            Controllers.FoundLocalControlsWorking = true;
         }
 
         /// <summary>
@@ -121,7 +117,7 @@ namespace RobotApp
             }
             else
             {
-                if (((ulong)stopwatch.ElapsedMilliseconds - NetworkCmd.msLastSendTime) > 6000)
+                if ((stopwatch.ElapsedMilliseconds - NetworkCmd.msLastSendTime) > 6000)
                 {
                     this.Connection.Text = "NOT SENDING";
                 }
@@ -141,7 +137,7 @@ namespace RobotApp
     /// </summary>
     public class Controllers
     {
-        public static bool HaveHidDeviceAttached = false;
+        public static bool FoundLocalControlsWorking = false;
 
         #region ----- Xbox HID-Controller -----
 
@@ -171,7 +167,7 @@ namespace RobotApp
                         if (!deviceAccessStatus.Equals(DeviceAccessStatus.Allowed))
                         {
                             Debug.WriteLine("DeviceAccess: " + deviceAccessStatus.ToString());
-                            HaveHidDeviceAttached = true;
+                            FoundLocalControlsWorking = true;
                         }
                     }
                     catch (Exception e)
@@ -189,7 +185,7 @@ namespace RobotApp
 
         private static void Controller_DirectionChanged(ControllerVector sender)
         {
-            HaveHidDeviceAttached = true;
+            FoundLocalControlsWorking = true;
             Debug.WriteLine("Direction: " + sender.Direction + ", Magnitude: " + sender.Magnitude);
             XBoxToRobotDirection((sender.Magnitude < 2500) ? ControllerDirection.None : sender.Direction, sender.Magnitude);
 
@@ -218,7 +214,7 @@ namespace RobotApp
         public enum CtrlCmds { Stop, Forward, Backward, Left, Right, ForwardLeft, ForwardRight, BackLeft, BackRight };
         public enum CtrlSpeeds { Min=0, Mid=5000, Max=10000 }
 
-        public static ulong msLastDirectionTime;
+        public static long msLastDirectionTime;
         public static CtrlCmds lastSetCmd;
         public static void SetRobotDirection(CtrlCmds cmd, int speed)
         {
@@ -248,7 +244,7 @@ namespace RobotApp
                 String sendStr = "[" + (Convert.ToInt32(cmd)).ToString() + "]:" + cmd.ToString();
                 NetworkCmd.SendCommandToRobot(sendStr);
             }
-            msLastDirectionTime = (ulong)(MainPage.stopwatch.ElapsedMilliseconds);
+            msLastDirectionTime = MainPage.stopwatch.ElapsedMilliseconds;
             lastSetCmd = cmd;
         }
 
@@ -263,6 +259,7 @@ namespace RobotApp
             lastSpeed = MotorCtrl.speedValue;
         }
 
+        public static long msLastMessageInTime;
         static bool lastHidCheck = false;
         public static void ParseCtrlMessage(String str)
         {
@@ -274,17 +271,19 @@ namespace RobotApp
                 if (id >= 0 && id <= 8)
                 {
                     CtrlCmds cmd = (CtrlCmds)id;
-                    if (HaveHidDeviceAttached)
+                    if (FoundLocalControlsWorking)
                     {
-                        if (lastHidCheck != HaveHidDeviceAttached) Debug.WriteLine("Have a Hid controller - skipping cmd message for now.");
-                        lastHidCheck = HaveHidDeviceAttached;
+                        if (lastHidCheck != FoundLocalControlsWorking) Debug.WriteLine("LOCAL controls found - skipping messages.");
                     }
                     else
                     {
+                        if (lastHidCheck != FoundLocalControlsWorking) Debug.WriteLine("No local controls yet - using messages.");
                         SetRobotDirection(cmd, (int)CtrlSpeeds.Max);
                     }
+                    lastHidCheck = FoundLocalControlsWorking;
                 }
             }
+            msLastMessageInTime = MainPage.stopwatch.ElapsedMilliseconds;
         }
 
         #endregion

@@ -3,6 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using Windows.UI.Xaml.Controls;
 using Windows.Storage;
+using System.Threading;
 
 namespace RobotApp
 {
@@ -20,16 +21,10 @@ namespace RobotApp
         public MainPage()
         {
             this.InitializeComponent();
-
-            GetRunningMode();
-
             stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            Controllers.XboxJoystickInit();
-            NetworkCmd.NetworkInit(serverHostName);
-            if (isRobot) MotorCtrl.MotorsInit();
-
+            GetModeAndStartup();
         }
 
         /// <summary>
@@ -66,18 +61,18 @@ namespace RobotApp
         }
 
         /// <summary>
-        /// Read the current running mode (controller host name) from local config file
+        /// Read the current running mode (controller host name) from local config file.
+        /// Initialize accordingly
         /// </summary>
-        public async void GetRunningMode()
+        public async void GetModeAndStartup()
         {
             try
             {
                 StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
                 StorageFile configFile = await storageFolder.GetFileAsync("config.txt");
                 String fileContent = await FileIO.ReadTextAsync(configFile);
+
                 serverHostName = fileContent;
-                isRobot = (serverHostName.Length > 0);
-                ShowStartupStatus();
             }
             catch (FileNotFoundException)
             {
@@ -88,6 +83,13 @@ namespace RobotApp
                 Debug.WriteLine("GetRunningMode() - " + ex.Message);
             }
 
+            isRobot = (serverHostName.Length > 0);
+            ShowStartupStatus();
+
+            Controllers.XboxJoystickInit();
+            NetworkCmd.NetworkInit(serverHostName);
+            if (isRobot) MotorCtrl.MotorsInit();
+            Controllers.SetRobotDirection(Controllers.CtrlCmds.Stop, (int)Controllers.CtrlSpeeds.Max);
         }
     }
 }

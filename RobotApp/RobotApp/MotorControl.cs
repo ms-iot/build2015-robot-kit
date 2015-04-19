@@ -26,7 +26,11 @@ namespace RobotApp
                      // setup, ensure pins initialized
                      ManualResetEvent mre = new ManualResetEvent(false);
                      mre.WaitOne(1000);
-                     if (!GpioInitialized) return;
+                     while (!GpioInitialized) 
+                     {                         
+                         CheckSystem();
+                     }
+
                      Controllers.SetRobotDirection(Controllers.CtrlCmds.Stop, (int)Controllers.CtrlSpeeds.Max);
 
                      // settle period - to dismiss transient startup conditions, as things are starting up
@@ -108,7 +112,7 @@ namespace RobotApp
             else rightPwmPin.Write(GpioPinValue.Low);
         }
 
-        static ulong msLastSensorTime;
+        static long msLastSensorTime;
         static bool isBlockSensed = false;
         static bool lastIsBlockSensed = false;
 
@@ -117,29 +121,34 @@ namespace RobotApp
         /// </summary>
         private static void CheckSystem()
         {
-            ulong msCurTime = (ulong)(MainPage.stopwatch.ElapsedMilliseconds);
+            long msCurTime = MainPage.stopwatch.ElapsedMilliseconds;
 
             //--- Safety stop robot if no directions for awhile
             if ((msCurTime - Controllers.msLastDirectionTime) > 15000)
             {
-                Debug.WriteLine("Safety Stop - while re-connecting");
+                Debug.WriteLine("Safety Stop (CurTime={0}, LastDirTime={1})", msCurTime, Controllers.msLastDirectionTime);
                 Controllers.SetRobotDirection(Controllers.CtrlCmds.Stop, (int)Controllers.CtrlSpeeds.Max);
-                Controllers.HaveHidDeviceAttached = false;
-                NetworkCmd.NetworkInit(MainPage.serverHostName);
-
+                Controllers.FoundLocalControlsWorking = false;
+                if ((msCurTime - Controllers.msLastMessageInTime) > 12000)
+                {
+                    NetworkCmd.NetworkInit(MainPage.serverHostName);
+                }
             }
 
             //--- check on block sensor
             if ((msCurTime - msLastSensorTime) > 50)
             {
-                isBlockSensed = DebounceValue((int)sensorPin.Read(), 0, 2) == 0;
-                if (lastIsBlockSensed != isBlockSensed)
+                if (GpioInitialized)
                 {
-                    Debug.WriteLine("isBlockSensed={0}", isBlockSensed);
-                    if (isBlockSensed)
+                    isBlockSensed = DebounceValue((int)sensorPin.Read(), 0, 2) == 0;
+                    if (lastIsBlockSensed != isBlockSensed)
                     {
-                        BackupRobotSequence();
-                        isBlockSensed = DebounceValue((int)sensorPin.Read(), 0, 2) == 0;
+                        Debug.WriteLine("isBlockSensed={0}", isBlockSensed);
+                        if (isBlockSensed)
+                        {
+                            BackupRobotSequence();
+                            isBlockSensed = DebounceValue((int)sensorPin.Read(), 0, 2) == 0;
+                        }
                     }
                 }
                 lastIsBlockSensed = isBlockSensed;
@@ -149,6 +158,8 @@ namespace RobotApp
 
         private static void MoveMotorsForTime(uint ms)
         {
+            if (!GpioInitialized) return;
+
             ManualResetEvent mre = new ManualResetEvent(false);
             ulong stick = (ulong)MainPage.stopwatch.ElapsedTicks;
             while (true)

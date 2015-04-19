@@ -15,7 +15,10 @@ namespace RobotApp
 
         public static void NetworkInit(String host)
         {
+            ClearPrevious();
+
             hostName = host;
+            Debug.WriteLine("NetworkInit() host={0}, port={1}", hostName, hostPort);
             if (hostName.Length > 0) 
             {
                 InitConnectionToHost(); 
@@ -26,7 +29,7 @@ namespace RobotApp
             }
         }
 
-        public static ulong msLastSendTime;
+        public static long msLastSendTime;
 
         static String ctrlStringToSend;
         public static void SendCommandToRobot(String stringToSend)
@@ -87,13 +90,13 @@ namespace RobotApp
                         lastStringSent = ctrlStringToSend;
                         writer.WriteString(lastStringSent);
                         await writer.StoreAsync();
-                        msLastSendTime = (ulong)(MainPage.stopwatch.ElapsedMilliseconds);
+                        msLastSendTime = MainPage.stopwatch.ElapsedMilliseconds;
 
                         // re-send periodically
-                        ulong msStart = (ulong)(MainPage.stopwatch.ElapsedMilliseconds);
+                        long msStart = MainPage.stopwatch.ElapsedMilliseconds;
                         for (; ;)
                         {
-                            ulong msCurrent = (ulong)(MainPage.stopwatch.ElapsedMilliseconds);
+                            long msCurrent = MainPage.stopwatch.ElapsedMilliseconds;
                             if ((msCurrent - msStart) > 3000) break;
                             if (lastStringSent.CompareTo(ctrlStringToSend) != 0) break;
                         }
@@ -114,12 +117,7 @@ namespace RobotApp
         {
             try
             {
-                if (socket != null)
-                {
-                    socket.Dispose();
-                    socket = null;
-                    socketIsConnected = false;
-                }
+                ClearPrevious();
                 socket = new StreamSocket();
 
                 HostName hostNameObj = new HostName(hostName);
@@ -135,6 +133,15 @@ namespace RobotApp
             }
         }
 
+        private static void ClearPrevious()
+        {
+            if (socket != null)
+            {
+                socket.Dispose();
+                socket = null;
+                socketIsConnected = false;
+            }
+        }
         public static void OnDataReadCompletion(uint bytesRead, DataReader readPacket)
         {
             if (readPacket == null)
@@ -215,7 +222,7 @@ namespace RobotApp
                 DataWriter writer = new DataWriter(socket.OutputStream);
                 writer.WriteString(writeStr);
                 await writer.StoreAsync();
-                msLastSendTime = (ulong)(MainPage.stopwatch.ElapsedMilliseconds);
+                msLastSendTime = MainPage.stopwatch.ElapsedMilliseconds;
             }
             catch (Exception exp)
             {
