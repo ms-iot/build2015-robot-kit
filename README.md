@@ -37,7 +37,7 @@ The robot can move in 8 directions:
 
 A **hard** turn rotates the wheels in opposite directions. A **soft** turn rotates only one wheel in the specified direction.
 
-**Insert image of directions here**
+**Tom: Insert image of directions robot can go here - a simple drawing with 8 way directions would work**
 
 ## Joystick Input
 The robot can be controlled via the left analog stick or digital direction pad.
@@ -60,8 +60,9 @@ From the Windows 10 Desktop PC UAP app, the keyboard controls are:
 When run on the Windows 10 Desktop PC, there is an input screen with the 8 directional movements of the robot.
 Click or touch any of these to move the robot.
 
-**Insert picture of UI here**
-**Add info about other buttons/properties in UI here**
+**Tom: Insert picture of UI here**
+
+**Tom: Add info about other buttons/properties in UI here**
 
 # Bill of Materials
 To build the robot, you will need the following:
@@ -79,6 +80,11 @@ To build the robot, you will need the following:
 
 # Hardware assembly
 A picture is worth a 1000 words. A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **Insert video here**
+
+## Assembly Notes
+* **Tolerances** - The robot frame is designed to snap together. We have noticed some slight tolerance differences in the laser cuts of the wood frame. You may want to leave the protective tape on the non-visible side of the parts as a shim when assembling the robot. if you plan to glue the robot frame together or if the pieces fit very tightly, you can choose to remove the protective tape.
+* **Screw hole alignment** - The screw holes were designed for the Raspberry pi 2, but the standoffs may not perfectly align due to tolerance differences in the laser cut frame. This is perfectly ok if the standoffs taper a bit.
+* **Don't overtighten!** - Do not overtighten the screws that go into the standoffs. Overtightening can cause the substrate of the Raspberry pi 2 to crack. It's ok for these to just be a snug fit, or even a bit loose. 
 
 # Software
 The robot kit software is a UAP project with 6 major files:
@@ -101,7 +107,11 @@ The robot kit software is a UAP project with 6 major files:
 ## NetworkCommands.cs
 
 ## package.appxmanifest 
-**insert info about joystick device capabilities here**
+**Tom: insert info about joystick device capabilities here**
+
+## Future Considerations
+* **Servo Power** - The robot has the servos powered off the Raspberry Pi 2 GPIO ports. This is done as a simple example to demonstrate GPIO. This can cause a significant current draw and potential voltage drop on the Raspberry Pi 2. As long as your power source is rated for 2 amps you will be fine. For prolonged usage you are encouraged to move the control of the servos to a seperately powered and controlled PWM hat for the Raspberry Pi 2, like [this one](https://www.adafruit.com/products/2327).
+* **Switch Location** - The switch is part of the robot project to demonstrate GPIO inputs. If you want to build autonomous control of the robot, the switch is not in the best location. You are encouraged to move the switch to a more optimal location.
 
 # Make. Invent. Do. 
 This robot kit (hardware and software) is made available as an [Open Source Project](https://github.com/ms-iot/build2015-robot-kit/blob/develop/LICENSE). 
