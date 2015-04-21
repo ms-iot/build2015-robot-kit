@@ -36,7 +36,7 @@ The robot can move in 8 directions:
 8. Soft backward right turn
 
 A **hard** turn rotates the wheels in opposite directions. A **soft** turn rotates only one wheel in the specified direction.
-![](images\AppDirectionals.png "direction control")
+![alt-text](images/AppDirectionals.png "direction control")
 
 ## Joystick Input
 The robot can be controlled via the left analog stick or digital direction pad.
