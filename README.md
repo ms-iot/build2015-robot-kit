@@ -112,6 +112,7 @@ The robot kit software is a UAP project with 6 major files:
 ## Future Considerations
 * **Servo Power** - The robot has the servos powered off the Raspberry Pi 2 GPIO ports. This is done as a simple example to demonstrate GPIO. This can cause a significant current draw and potential voltage drop on the Raspberry Pi 2. As long as your power source is rated for 2 amps you will be fine. For prolonged usage you are encouraged to move the control of the servos to a seperately powered and controlled PWM hat for the Raspberry Pi 2, like [this one](https://www.adafruit.com/products/2327).
 * **Switch Location** - The switch is part of the robot project to demonstrate GPIO inputs. If you want to build autonomous control of the robot, the switch is not in the best location. You are encouraged to move the switch to a more optimal location.
+* **Remove the tether** - Currently the robot kit is designed to use a power supply and a network cable. In an upcoming update of Windows 10 you will be able to use WiFi instead of the network cable. At that time, you will also be able to remove the power cable as long as you can find a 2 amp, 5 volt USB power supply.
 
 # Make. Invent. Do. 
 This robot kit (hardware and software) is made available as an [Open Source Project](https://github.com/ms-iot/build2015-robot-kit/blob/develop/LICENSE). 
