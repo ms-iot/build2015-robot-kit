@@ -59,9 +59,7 @@ From the Windows 10 Desktop PC UAP app, the keyboard controls are:
 When run on the Windows 10 Desktop PC, there is an input screen with the 8 directional movements of the robot.
 Click or touch any of these to move the robot.
 
-**Tom: Insert picture of UI here**
-
-**Tom: Add info about other buttons/properties in UI here**
+![alt-text](images/RobotAppScreen.png "RobotApp screen")
 
 # Bill of Materials
 To build the robot, you will need the following:
@@ -80,6 +78,9 @@ To build the robot, you will need the following:
 # Hardware assembly
 A picture is worth a 1000 words. A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **Insert video here**
 
+  **Pin Assignments**
+![alt-text](images/RobotAppPins.png "Pin Assignments")
+
 ## Assembly Notes
 * **Tolerances** - The robot frame is designed to snap together. We have noticed some slight tolerance differences in the laser cuts of the wood frame. You may want to leave the protective tape on the non-visible side of the parts as a shim when assembling the robot. if you plan to glue the robot frame together or if the pieces fit very tightly, you can choose to remove the protective tape.
 * **Screw hole alignment** - The screw holes were designed for the Raspberry pi 2, but the standoffs may not perfectly align due to tolerance differences in the laser cut frame. This is perfectly ok if the standoffs taper a bit.
@@ -96,17 +97,36 @@ The robot kit software is a UAP project with 6 major files:
 6. **package.appxmanifest** - the manifest file that defines properties of this UAP application
 
 ## MainPage.xaml.cs
+This is where things start, and where the MainPage class is set up.  The application classes for the robot are launched here.  The RobotApp reads any previously saved mode values, and initializes itself to run as a Robot or remote Controller.  The MainPage class is the only UI page for the RobotApp, to remain simplistic.  The onscreen buttons, and key input properties, are setup in MainPage.xaml.
 
 ## XboxHidController.cs
+This contains the interface logic for getting input from the Xbox game controller.  Once the initialization method finds a matching gaming HID device (in Controllers.cs), the methods in XboxHidController.cs are setup as delegates to process the Xbox specific input and behaviors.  Ultimately, these methods return a direction and a magnitude value, which are used to determine how to drive the servo motors. 
+
+There are two types of directional inputs from the game controller.  The DPad type simply returns one of eight directions, making it easy to work with.  The joystick type requires translating an X and Y value into appropriate directions, as well as filtering out minute movements while the stick is closer to its center position.
 
 ## MotorControl.cs
+This class handles all of the I/O to control the continuous rotation servo motors, and block sensor.  The GPIO library is used to control selected I/O pins.  The main timing loop generates appropriate pulse signals to drive the motors, for any of the eight selected directions.  This main drive loop, is also where other critical system checks are done (i.e. block sensor, device communication breaks, etc.).  
 
-## Controller.cs
+The block sensor, is also defined here, and was setup to demonstrate a basic motion-safety feature.  With it connected, the robot will stop, and turn-around, if an obstacle triggers the switch.
+
+## Controllers.cs
+This class coordinates the several types of input which can be used to drive the robot.  Directional inputs are handled from key presses, mouse or touch input, and Xbox game controller input, which are either connected directly, or sent from a remote RobotApp.  The Controllers class provides methods to translate each of these into the basic directional values used by the MotorControl class.
 
 ## NetworkCommands.cs
+This class sets up either a client or server stream socket object.  If the RobotApp is a basic robot, a client object is used.  A basic robot reads in commands from a networked App, to optionally use along with any locally attached input devices.   If the App is setup as a remote controller, a server object which listens for connections is used.  When the App is in a server mode, it writes directional commands out to connected client robots.  Both modes of the RobotApp utilize the same Controllers classes.
 
 ## package.appxmanifest 
-**Tom: insert info about joystick device capabilities here**
+The Capabilities defined in the manifest file, enable networking, and human interface device privileges.  Be sure to include these within your modified projects.
+
+    <Capabilities>
+      <Capability Name="privateNetworkClientServer" />
+      <DeviceCapability Name="humaninterfacedevice">
+        <Device Id="any">
+          <Function Type="usage:0001 0005"/>
+        </Device>
+      </DeviceCapability>
+    </Capabilities>
+
 
 ## Future Considerations
 * **Servo Power** - The robot has the servos powered off the Raspberry Pi 2 GPIO ports. This is done as a simple example to demonstrate GPIO. This can cause a significant current draw and potential voltage drop on the Raspberry Pi 2. As long as your power source is rated for 2 amps you will be fine. For prolonged usage you are encouraged to move the control of the servos to a seperately powered and controlled PWM hat for the Raspberry Pi 2, like [this one](https://www.adafruit.com/products/2327).
