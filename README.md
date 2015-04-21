@@ -15,8 +15,10 @@ By the time you are done with this project you will gain the following experienc
 
 We are excited to embark on this journey with you - Thank you from the Microsoft IoT Team!
 
+![alt-text](images/RobotKit.png "Robot Kit")
+
 # Usage
-Download the project, load it into Visual Studio compile and deploy the application. Follow this **example (TBD)**
+Download the project, load it into Visual Studio compile and deploy the application. Follow this [link](https://github.com/ms-iot/build2015-robot-kit/)
 
 The application can be run in 2 ways:
 
@@ -98,15 +100,15 @@ The robot kit software is a UAP project with 6 major files:
 6. **package.appxmanifest** - the manifest file that defines properties of this UAP application
 
 ## MainPage.xaml.cs
-This is where things start, and where the MainPage class is set up.  The application classes for the robot are launched here.  The RobotApp reads any previously saved mode values, and initializes itself to run as a Robot or remote Controller.  The MainPage class is the only UI page for the RobotApp, to remain simplistic.  The onscreen buttons, and key input properties, are setup in MainPage.xaml.
+This is where the MainPage class is set up, and where the suppororting robot classes are launched from.  The RobotApp reads the previously saved mode, and initializes itself to run as a Robot or Controller.  The MainPage class is the only UI page for the RobotApp.  The onscreen buttons, and key input properties, are setup in MainPage.xaml.
 
 ## XboxHidController.cs
-This contains the interface logic for getting input from the Xbox game controller.  Once the initialization method finds a matching gaming HID device (in Controllers.cs), the methods in XboxHidController.cs are setup as delegates to process the Xbox specific input and behaviors.  Ultimately, these methods return a direction and a magnitude value, which are used to determine how to drive the servo motors. 
+This contains the interface logic for getting input from the Xbox game controller.  Once the initialization method in Controllers.cs finds an attached gaming HID device, it sets up the delegates in XboxHidController.cs to process the input events.  Ultimately, these methods return a direction and a magnitude value, which are used to determine how to drive the servo motors. 
 
-There are two types of directional inputs from the game controller.  The DPad type simply returns one of eight directions, making it easy to work with.  The joystick type requires translating an X and Y value into appropriate directions, as well as filtering out minute movements while the stick is closer to its center position.
+There are two types of directional inputs from the game controller, DPad and joystick.  The DPad type simply returns one of eight directions, making it easy to work with.  The joystick type requires translating an X and Y value into appropriate directions, as well as filtering out minute movements while the stick is closer to its center position.
 
 ## MotorControl.cs
-This class handles all of the I/O to control the continuous rotation servo motors, and block sensor.  The GPIO library is used to control selected I/O pins.  The main timing loop generates appropriate pulse signals to drive the motors, for any of the eight selected directions.  This main drive loop, is also where other critical system checks are done (i.e. block sensor, device communication breaks, etc.).  
+This class handles all of the I/O to control the continuous rotation servo motors, and block sensor.  The GPIO library is used to control selected I/O pins for this project.  The main timing loop generates appropriate pulse signals to drive the motors, for any of the eight selected directions.  This loop, is also where other critical system checks are done (i.e. block sensor, device communication breaks, etc.).  
 
 The block sensor, is also defined here, and was setup to demonstrate a basic motion-safety feature.  With it connected, the robot will stop, and turn-around, if an obstacle triggers the switch.
 
