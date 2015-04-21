@@ -78,7 +78,8 @@ To build the robot, you will need the following:
 # Hardware assembly
 A picture is worth a 1000 words. A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **Insert video here**
 
-Pin Assignments
+ Pin Assignments
+
 ![alt-text](images/RobotAppPins.PNG "Pin Assignments")
 
 ## Assembly Notes
