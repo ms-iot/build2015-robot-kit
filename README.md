@@ -15,10 +15,8 @@ By the time you are done with this project you will gain the following experienc
 
 We are excited to embark on this journey with you - Thank you from the Microsoft IoT Team!
 
-![alt-text](images/RobotKit.png "Robot Kit")
-
 # Usage
-Download the project, load it into Visual Studio compile and deploy the application. Follow this [link](https://github.com/ms-iot/build2015-robot-kit/)
+Download the project, load it into Visual Studio compile and deploy the application. Follow this [link.](https://github.com/ms-iot/build2015-robot-kit/)
 
 The application can be run in 2 ways:
 
@@ -78,7 +76,11 @@ To build the robot, you will need the following:
 10. Micro screwdrivers
 
 # Hardware assembly
-A picture is worth a 1000 words. A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **Insert video here**
+A picture is worth a 1000 words. 
+
+![alt-text](images/RobotKit.png "Robot Kit")
+
+A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **Insert video here**
 
  Pin Assignments
 
@@ -100,23 +102,23 @@ The robot kit software is a UAP project with 6 major files:
 6. **package.appxmanifest** - the manifest file that defines properties of this UAP application
 
 ## MainPage.xaml.cs
-This is where the MainPage class is set up, and where the suppororting robot classes are launched from.  The RobotApp reads the previously saved mode, and initializes itself to run as a Robot or Controller.  The MainPage class is the only UI page for the RobotApp.  The onscreen buttons, and key input properties, are setup in MainPage.xaml.
+The MainPage class is where the supporting robot classes get started.  The RobotApp reads the previously saved mode, and initializes itself to run as a Robot or Controller.  The MainPage class is the only UI page for the RobotApp.  The onscreen buttons, and key input properties, are setup in MainPage.xaml.
 
 ## XboxHidController.cs
-This contains the interface logic for getting input from the Xbox game controller.  Once the initialization method in Controllers.cs finds an attached gaming HID device, it sets up the delegates in XboxHidController.cs to process the input events.  Ultimately, these methods return a direction and a magnitude value, which are used to determine how to drive the servo motors. 
+The XboxHidController class contains the interface logic for getting input from the Xbox game controller.  Once the initialization method in Controllers.cs finds an attached gaming HID device, it sets up the delegates in XboxHidController.cs to process the input events.  Ultimately, these methods return a direction and a magnitude value, which are used to determine how to drive the servo motors. 
 
 There are two types of directional inputs from the game controller, DPad and joystick.  The DPad type simply returns one of eight directions, making it easy to work with.  The joystick type requires translating an X and Y value into appropriate directions, as well as filtering out minute movements while the stick is closer to its center position.
 
 ## MotorControl.cs
-This class handles all of the I/O to control the continuous rotation servo motors, and block sensor.  The GPIO library is used to control selected I/O pins for this project.  The main timing loop generates appropriate pulse signals to drive the motors, for any of the eight selected directions.  This loop, is also where other critical system checks are done (i.e. block sensor, device communication breaks, etc.).  
+This MotorCtrl class handles all of the I/O to control the continuous rotation servo motors, and block sensor.  The GPIO library is used to control selected I/O pins for this project.  The main timing loop generates appropriate pulse signals to drive the motors, for any of the eight selected directions.  This loop, is also where other critical system checks are done (i.e. block sensor, device communication breaks, etc.).  
 
 The block sensor, is also defined here, and was setup to demonstrate a basic motion-safety feature.  With it connected, the robot will stop, and turn-around, if an obstacle triggers the switch.
 
 ## Controllers.cs
-This class coordinates the several types of input which can be used to drive the robot.  Directional inputs are handled from key presses, mouse or touch input, and Xbox game controller input, which are either connected directly, or sent from a remote RobotApp.  The Controllers class provides methods to translate each of these into the basic directional values used by the MotorControl class.
+This Controllers class coordinates the several types of input which can be used to drive the robot.  Directional inputs are handled from key presses, mouse or touch input, and Xbox game controller input, which are either connected directly, or sent from a remote RobotApp.  The Controllers class provides methods to translate each of these into the basic directional values used by the MotorControl class.
 
 ## NetworkCommands.cs
-This class sets up either a client or server stream socket object.  If the RobotApp is a basic robot, a client object is used.  A basic robot reads in commands from a networked App, to optionally use along with any locally attached input devices.   If the App is setup as a remote controller, a server object which listens for connections is used.  When the App is in a server mode, it writes directional commands out to connected client robots.  Both modes of the RobotApp utilize the same Controllers classes.
+This NetworkCmd class sets up either a client or server stream socket object.  If the RobotApp is a basic robot, a client object is used.  A basic robot reads in commands from a networked App, to optionally use along with any locally attached input devices.   If the App is setup as a remote controller, a server object which listens for connections is used.  When the App is in a server mode, it writes directional commands out to connected client robots.  Both modes of the RobotApp utilize the same Controllers classes.
 
 ## package.appxmanifest 
 The Capabilities defined in the manifest file, enable networking, and human interface device privileges.  Be sure to include these within your modified projects.
