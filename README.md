@@ -78,8 +78,8 @@ To build the robot, you will need the following:
 # Hardware assembly
 A picture is worth a 1000 words. A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **Insert video here**
 
-  **Pin Assignments**
-![alt-text](images/RobotAppPins.png "Pin Assignments")
+Pin Assignments
+![alt-text](images/RobotAppPins.PNG "Pin Assignments")
 
 ## Assembly Notes
 * **Tolerances** - The robot frame is designed to snap together. We have noticed some slight tolerance differences in the laser cuts of the wood frame. You may want to leave the protective tape on the non-visible side of the parts as a shim when assembling the robot. if you plan to glue the robot frame together or if the pieces fit very tightly, you can choose to remove the protective tape.
