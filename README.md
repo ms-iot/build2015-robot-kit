@@ -16,7 +16,7 @@ By the time you are done with this project you will gain the following experienc
 We are excited to embark on this journey with you - Thank you from the Microsoft IoT Team!
 
 # Usage
-Download the project, load it into Visual Studio compile and deploy the application. Follow this **example (TBD)**
+Download the project, load it into Visual Studio compile and deploy the application. Follow this [link.](https://github.com/ms-iot/build2015-robot-kit/)
 
 The application can be run in 2 ways:
 
@@ -36,8 +36,7 @@ The robot can move in 8 directions:
 8. Soft backward right turn
 
 A **hard** turn rotates the wheels in opposite directions. A **soft** turn rotates only one wheel in the specified direction.
-
-**Tom: Insert image of directions robot can go here - a simple drawing with 8 way directions would work**
+![alt-text](images/AppDirectionals.png "direction control")
 
 ## Joystick Input
 The robot can be controlled via the left analog stick or digital direction pad.
@@ -60,9 +59,7 @@ From the Windows 10 Desktop PC UAP app, the keyboard controls are:
 When run on the Windows 10 Desktop PC, there is an input screen with the 8 directional movements of the robot.
 Click or touch any of these to move the robot.
 
-**Tom: Insert picture of UI here**
-
-**Tom: Add info about other buttons/properties in UI here**
+![alt-text](images/RobotAppScreen.png "RobotApp screen")
 
 # Bill of Materials
 To build the robot, you will need the following:
@@ -79,7 +76,15 @@ To build the robot, you will need the following:
 10. Micro screwdrivers
 
 # Hardware assembly
-A picture is worth a 1000 words. A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **Insert video here**
+A picture is worth a 1000 words. 
+
+![alt-text](images/RobotKit.png "Robot Kit")
+
+A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **Insert video here**
+
+ Pin Assignments
+
+![alt-text](images/RobotAppPins.PNG "Pin Assignments")
 
 ## Assembly Notes
 * **Tolerances** - The robot frame is designed to snap together. We have noticed some slight tolerance differences in the laser cuts of the wood frame. You may want to leave the protective tape on the non-visible side of the parts as a shim when assembling the robot. if you plan to glue the robot frame together or if the pieces fit very tightly, you can choose to remove the protective tape.
@@ -91,28 +96,46 @@ The robot kit software is a UAP project with 6 major files:
 
 1. **MainPage.xaml.cs** - The main application code and entry point
 2. **XboxHidController.cs** - The initialization and handling logic for the Xbox controller
-3. **MotorControllers.cs** - The main logic for controlling the continuous rotation servos
-4. **Controller.cs** - The logic for converting joystick, key press and mouse events to robot movements
+3. **MotorControl.cs** - The main logic for controlling the continuous rotation servos
+4. **Controller.cs** - The logic for converting joystick, key press, mouse, and touch events to robot movements
 5. **NetworkCommands.cs** - the logic to setup client and server networking threads and create/process network messages
 6. **package.appxmanifest** - the manifest file that defines properties of this UAP application
 
 ## MainPage.xaml.cs
+The MainPage class is where the supporting robot classes get started.  The RobotApp reads the previously saved mode, and initializes itself to run as a Robot or Controller.  The MainPage class is the only UI page for the RobotApp.  The onscreen buttons, and key input properties, are setup in MainPage.xaml.
 
 ## XboxHidController.cs
+The XboxHidController class contains the interface logic for getting input from the Xbox game controller.  Once the initialization method in Controllers.cs finds an attached gaming HID device, it sets up the delegates in XboxHidController.cs to process the input events.  Ultimately, these methods return a direction and a magnitude value, which are used to determine how to drive the servo motors. 
 
-## MotorControllers.cs
+There are two types of directional inputs from the game controller, DPad and joystick.  The DPad type simply returns one of eight directions, making it easy to work with.  The joystick type requires translating an X and Y value into appropriate directions, as well as filtering out minute movements while the stick is closer to its center position.
 
-## Controller.cs
+## MotorControl.cs
+This MotorCtrl class handles all of the I/O to control the continuous rotation servo motors, and block sensor.  The GPIO library is used to control selected I/O pins for this project.  The main timing loop generates appropriate pulse signals to drive the motors, for any of the eight selected directions.  This loop, is also where other critical system checks are done (i.e. block sensor, device communication breaks, etc.).  
+
+The block sensor, is also defined here, and was setup to demonstrate a basic motion-safety feature.  With it connected, the robot will stop, and turn-around, if an obstacle triggers the switch.
+
+## Controllers.cs
+This Controllers class coordinates the several types of input which can be used to drive the robot.  Directional inputs are handled from key presses, mouse or touch input, and Xbox game controller input, which are either connected directly, or sent from a remote RobotApp.  The Controllers class provides methods to translate each of these into the basic directional values used by the MotorControl class.
 
 ## NetworkCommands.cs
+This NetworkCmd class sets up either a client or server stream socket object.  If the RobotApp is a basic robot, a client object is used.  A basic robot reads in commands from a networked App, to optionally use along with any locally attached input devices.   If the App is setup as a remote controller, a server object which listens for connections is used.  When the App is in a server mode, it writes directional commands out to connected client robots.  Both modes of the RobotApp utilize the same Controllers classes.
 
 ## package.appxmanifest 
-**Tom: insert info about joystick device capabilities here**
+The Capabilities defined in the manifest file, enable networking, and human interface device privileges.  Be sure to include these within your modified projects.
+
+    <Capabilities>
+      <Capability Name="privateNetworkClientServer" />
+      <DeviceCapability Name="humaninterfacedevice">
+        <Device Id="any">
+          <Function Type="usage:0001 0005"/>
+        </Device>
+      </DeviceCapability>
+    </Capabilities>
+
 
 ## Future Considerations
 * **Servo Power** - The robot has the servos powered off the Raspberry Pi 2 GPIO ports. This is done as a simple example to demonstrate GPIO. This can cause a significant current draw and potential voltage drop on the Raspberry Pi 2. As long as your power source is rated for 2 amps you will be fine. For prolonged usage you are encouraged to move the control of the servos to a seperately powered and controlled PWM hat for the Raspberry Pi 2, like [this one](https://www.adafruit.com/products/2327).
 * **Switch Location** - The switch is part of the robot project to demonstrate GPIO inputs. If you want to build autonomous control of the robot, the switch is not in the best location. You are encouraged to move the switch to a more optimal location.
-* **Remove the tether** - Currently the robot kit is designed to use a power supply and a network cable. In an upcoming update of Windows 10 you will be able to use WiFi instead of the network cable. At that time, you will also be able to remove the power cable as long as you can find a 2 amp, 5 volt USB power supply.
 
 # Make. Invent. Do. 
 This robot kit (hardware and software) is made available as an [Open Source Project](https://github.com/ms-iot/build2015-robot-kit/blob/develop/LICENSE). 
