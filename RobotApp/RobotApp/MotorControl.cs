@@ -61,10 +61,12 @@ namespace RobotApp
         const int LEFT_PWM_PIN = 5;
         const int RIGHT_PWM_PIN = 6;
         const int SENSOR_PIN = 13;
+        const int ACT_LED_PIN = 47; // rpi2-its-pin47, rpi-its-pin16
         private static GpioController gpioController = null;
         private static GpioPin leftPwmPin = null;
         private static GpioPin rightPwmPin = null;
         private static GpioPin sensorPin = null;
+        private static GpioPin statusLedPin = null;
 
         private enum MotorIds { Left, Right };
         public enum PulseMs { stop = -1, ms1 = 0, ms2 = 2 } // values selected for thread-safety
@@ -112,7 +114,7 @@ namespace RobotApp
             else rightPwmPin.Write(GpioPinValue.Low);
         }
 
-        static long msLastSensorTime;
+        static long msLastCheckTime;
         static bool isBlockSensed = false;
         static bool lastIsBlockSensed = false;
 
@@ -135,25 +137,31 @@ namespace RobotApp
                 }
             }
 
-            //--- check on block sensor
-            if ((msCurTime - msLastSensorTime) > 50)
+            //--- check on important things at a reasonable frequency
+            if ((msCurTime - msLastCheckTime) > 50)
             {
                 if (GpioInitialized)
                 {
-                    isBlockSensed = DebounceValue((int)sensorPin.Read(), 0, 2) == 0;
                     if (lastIsBlockSensed != isBlockSensed)
                     {
                         Debug.WriteLine("isBlockSensed={0}", isBlockSensed);
                         if (isBlockSensed)
                         {
                             BackupRobotSequence();
-                            isBlockSensed = DebounceValue((int)sensorPin.Read(), 0, 2) == 0;
+                            isBlockSensed = false; 
                         }
                     }
+                    lastIsBlockSensed = isBlockSensed;
                 }
-                lastIsBlockSensed = isBlockSensed;
-                msLastSensorTime = msCurTime;
+
+                // set ACT onboard LED to indicate motor movement
+                // bool stopped = (waitTimeLeft == PulseMs.stop && waitTimeRight == PulseMs.stop);
+                // statusLedPin.Write(stopped ? GpioPinValue.High : GpioPinValue.Low);
+
+                msLastCheckTime = msCurTime;
             }
+
+
         }
 
         private static void MoveMotorsForTime(uint ms)
@@ -206,8 +214,18 @@ namespace RobotApp
                     rightPwmPin = gpioController.OpenPin(RIGHT_PWM_PIN);
                     rightPwmPin.SetDriveMode(GpioPinDriveMode.Output);
 
+                    statusLedPin = gpioController.OpenPin(ACT_LED_PIN);
+                    statusLedPin.SetDriveMode(GpioPinDriveMode.Output);
+                    statusLedPin.Write(GpioPinValue.Low);
+
                     sensorPin = gpioController.OpenPin(SENSOR_PIN);
                     sensorPin.SetDriveMode(GpioPinDriveMode.Input);
+                    sensorPin.ValueChanged += (s, e) =>
+                    {
+                        GpioPinValue pinValue = sensorPin.Read();
+                        statusLedPin.Write(pinValue);
+                        isBlockSensed = (e.Edge == GpioPinEdge.RisingEdge);
+                    };
 
                     GpioInitialized = true;
                 }
