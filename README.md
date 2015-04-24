@@ -3,9 +3,9 @@ You are about to embark on a journey, and we are excited to be part of it! Get r
 
 By the time you are done with this project you will gain the following experience:
 
-1. Understand how [Windows 10 Universal Applications (UAP)](http://blogs.windows.com/buildingapps/2014/09/30/universal-windows-apps-get-better-with-windows-10/) work
+1. Understand how [Windows 10 Universal Applications (UWP)](http://blogs.windows.com/buildingapps/2014/09/30/universal-windows-apps-get-better-with-windows-10/) work
 2. See how the same application can come alive and change behavior by running on the robot via Windows 10 on a Raspberry Pi 2 **and** on your Windows 10 Desktop PC  
-3. Program a UAP, using C# and XAML
+3. Program a UWP, using C# and XAML
 4. Control digital [GPIO](https://www.youtube.com/watch?v=jwWxKACHWxs) from your [Raspberry Pi 2](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/)
 5. Use GPIO and timers to power a servo motor
 6. React to a toggled switch
@@ -20,8 +20,8 @@ Download the project, load it into Visual Studio compile and deploy the applicat
 
 The application can be run in 2 ways:
 
-1. **Windows 10 desktop UAP** - here you can use the mouse or touch to drive the robot. You can also plug in the Xbox 360 controller and use that to drive the robot over the network
-2. **Windows 10 UAP for the Raspberry pi 2** - here you can drive the robot directly with the Xbox 360 controller, or via network commands from the Windows 10 UAP
+1. **Windows 10 desktop UWP** - here you can use the mouse or touch to drive the robot. You can also plug in the Xbox 360 controller and use that to drive the robot over the network
+2. **Windows 10 UWP for the Raspberry pi 2** - here you can drive the robot directly with the Xbox 360 controller, or via network commands from the Windows 10 UWP
 
 ## Directional movement
 The robot can move in 8 directions:
@@ -43,7 +43,7 @@ The robot can be controlled via the left analog stick or digital direction pad.
 They joystick can be plugged into the robot directly via the USB port on the Raspberry Pi 2 or the Windows 10 Desktop PC via USB.
 
 ## Keyboard Input
-From the Windows 10 Desktop PC UAP app, the keyboard controls are:
+From the Windows 10 Desktop PC UWP app, the keyboard controls are:
 
 * Forward - Up arrow / W
 * Backward - Down arrow / X
@@ -92,14 +92,14 @@ A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **In
 * **Don't overtighten!** - Do not overtighten the screws that go into the standoffs. Overtightening can cause the substrate of the Raspberry pi 2 to crack. It's ok for these to just be a snug fit, or even a bit loose. 
 
 # Software
-The robot kit software is a UAP project with 6 major files:
+The robot kit software is a UWP project with 6 major files:
 
 1. **MainPage.xaml.cs** - The main application code and entry point
 2. **XboxHidController.cs** - The initialization and handling logic for the Xbox controller
 3. **MotorControl.cs** - The main logic for controlling the continuous rotation servos
 4. **Controller.cs** - The logic for converting joystick, key press, mouse, and touch events to robot movements
 5. **NetworkCommands.cs** - the logic to setup client and server networking threads and create/process network messages
-6. **package.appxmanifest** - the manifest file that defines properties of this UAP application
+6. **package.appxmanifest** - the manifest file that defines properties of this UWP application
 
 ## MainPage.xaml.cs
 The MainPage class is where the supporting robot classes get started.  The RobotApp reads the previously saved mode, and initializes itself to run as a Robot or Controller.  The MainPage class is the only UI page for the RobotApp.  The onscreen buttons, and key input properties, are setup in MainPage.xaml.
