@@ -80,7 +80,7 @@ A picture is worth a 1000 words.
 
 ![alt-text](images/RobotKit.png "Robot Kit")
 
-A video is 1000 pictures. Watch this quick tutorial to assemble your robot: **Insert video here**
+A video is 1000 pictures. Watch [this](https://youtu.be/aKCieb-Gf2g) quick tutorial to assemble your robot.
 
  Pin Assignments
 
