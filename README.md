@@ -1,11 +1,11 @@
 # Welcome: Say hello to your little friend!
-You are about to embark on a journey, and we are excited to be part of it! Get ready to make and program your robot using Windows 10!
+You are about to embark on a journey, and we are excited to be part of it! Get ready to make and program your robot using Windows 10 IoT Core!
 
 By the time you are done with this project you will gain the following experience:
 
-1. Understand how [Windows 10 Universal Applications (UWP)](http://blogs.windows.com/buildingapps/2014/09/30/universal-windows-apps-get-better-with-windows-10/) work
-2. See how the same application can come alive and change behavior by running on the robot via Windows 10 on a Raspberry Pi 2 **and** on your Windows 10 Desktop PC  
-3. Program a UWP, using C# and XAML
+1. Understand how [Windows 10 Universal Windows Applications (UWA)](http://blogs.windows.com/buildingapps/2014/09/30/universal-windows-apps-get-better-with-windows-10/) work
+2. See how the same application can come alive and change behavior by running on the robot via Windows 10 IoT Core on a Raspberry Pi 2 **and** on your Windows 10 Desktop PC  
+3. Program a UWA, using C# and XAML
 4. Control digital [GPIO](https://www.youtube.com/watch?v=jwWxKACHWxs) from your [Raspberry Pi 2](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/)
 5. Use GPIO and timers to power a servo motor
 6. React to a toggled switch
@@ -20,8 +20,8 @@ Download the project, load it into Visual Studio compile and deploy the applicat
 
 The application can be run in 2 ways:
 
-1. **Windows 10 desktop UWP** - here you can use the mouse or touch to drive the robot. You can also plug in the Xbox 360 controller and use that to drive the robot over the network
-2. **Windows 10 UWP for the Raspberry pi 2** - here you can drive the robot directly with the Xbox 360 controller, or via network commands from the Windows 10 UWP
+1. **Windows 10 desktop UWA** - here you can use the mouse or touch to drive the robot. You can also plug in the Xbox 360 controller and use that to drive the robot over the network
+2. **Windows 10 IoT Core UWA for the Raspberry pi 2** - here you can drive the robot directly with the Xbox 360 controller, or via network commands from the Windows 10 UWA
 
 ## Directional movement
 The robot can move in 8 directions:
@@ -43,7 +43,7 @@ The robot can be controlled via the left analog stick or digital direction pad.
 They joystick can be plugged into the robot directly via the USB port on the Raspberry Pi 2 or the Windows 10 Desktop PC via USB.
 
 ## Keyboard Input
-From the Windows 10 Desktop PC UWP app, the keyboard controls are:
+From the Windows 10 Desktop PC UWA, the keyboard controls are:
 
 * Forward - Up arrow / W
 * Backward - Down arrow / X
@@ -82,17 +82,17 @@ A picture is worth a 1000 words.
 
 A video is 1000 pictures. Watch [this](https://youtu.be/aKCieb-Gf2g) quick tutorial to assemble your robot.
 
- Pin Assignments
+# Pin Assignments
 
 ![alt-text](images/RobotAppPins.PNG "Pin Assignments")
 
-## Assembly Notes
+# Assembly Notes
 * **Tolerances** - The robot frame is designed to snap together. We have noticed some slight tolerance differences in the laser cuts of the wood frame. You may want to leave the protective tape on the non-visible side of the parts as a shim when assembling the robot. if you plan to glue the robot frame together or if the pieces fit very tightly, you can choose to remove the protective tape.
 * **Screw hole alignment** - The screw holes were designed for the Raspberry pi 2, but the standoffs may not perfectly align due to tolerance differences in the laser cut frame. This is perfectly ok if the standoffs taper a bit.
 * **Don't overtighten!** - Do not overtighten the screws that go into the standoffs. Overtightening can cause the substrate of the Raspberry pi 2 to crack. It's ok for these to just be a snug fit, or even a bit loose. 
 
 # Software
-The robot kit software is a UWP project with 6 major files:
+The robot kit software is a UWA project with 6 major files:
 
 1. **MainPage.xaml.cs** - The main application code and entry point
 2. **XboxHidController.cs** - The initialization and handling logic for the Xbox controller
