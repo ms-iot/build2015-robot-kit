@@ -102,7 +102,11 @@ The robot kit software is a UWP project with 6 major files:
 6. **package.appxmanifest** - the manifest file that defines properties of this UWP application
 
 ## MainPage.xaml.cs
-The MainPage class is where the supporting robot classes get started.  The RobotApp reads the previously saved mode, and initializes itself to run as a Robot or Controller.  The MainPage class is the only UI page for the RobotApp.  The onscreen buttons, and key input properties, are setup in MainPage.xaml.
+The MainPage class is where the supporting robot classes get started.  It is the only UI page for the RobotApp.  The onscreen buttons, and key input properties, are setup in MainPage.xaml.
+
+MainPage.xaml.cs is also where RobotApp reads the previously saved mode, and initializes itself to run as a Robot or Controller.  When using a remote controller (optional), the robots need to know the name of a host computer, where the controlling app is running. It can be your laptop, or even a phone. The following String is where the default name can be hard-coded.  It is also set in config.txt in the application data folder. Change it to your laptop's name or ip address, so the robots can connect to it for directional commands.
+
+    private static String defaultHostName = "tak-hp-laptop";  // <-- change to your laptop name or ip address
 
 ## XboxHidController.cs
 The XboxHidController class contains the interface logic for getting input from the Xbox game controller.  Once the initialization method in Controllers.cs finds an attached gaming HID device, it sets up the delegates in XboxHidController.cs to process the input events.  Ultimately, these methods return a direction and a magnitude value, which are used to determine how to drive the servo motors. 
@@ -119,6 +123,8 @@ This Controllers class coordinates the several types of input which can be used 
 
 ## NetworkCommands.cs
 This NetworkCmd class sets up either a client or server stream socket object.  If the RobotApp is a basic robot, a client object is used.  A basic robot reads in commands from a networked App, to optionally use along with any locally attached input devices.   If the App is setup as a remote controller, a server object which listens for connections is used.  When the App is in a server mode, it writes directional commands out to connected client robots.  Both modes of the RobotApp utilize the same Controllers classes.
+
+See the note about how to set the *defaultHostName* string in *MainPage.xaml.cs* above, to set who the host computer is.
 
 ## package.appxmanifest 
 The Capabilities defined in the manifest file, enable networking, and human interface device privileges.  Be sure to include these within your modified projects.
