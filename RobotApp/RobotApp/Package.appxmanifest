@@ -7,20 +7,20 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="e917876b-7d1c-493a-8369-9e413eb07d21"
-    Publisher="CN=thomken"
+    Name="4c4c3bc7-b508-4160-9304-68f1a735a20f"
+    Publisher="CN=BUILD_Attendee"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="e917876b-7d1c-493a-8369-9e413eb07d21" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="4c4c3bc7-b508-4160-9304-68f1a735a20f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>RobotApp</DisplayName>
-    <PublisherDisplayName>thomken</PublisherDisplayName>
+    <PublisherDisplayName>BUILD_Attendee</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10053.0" MaxVersionTested="10.0.10053.0" />
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10069.0" MaxVersionTested="10.0.10069.0" />
   </Dependencies>
 
   <Resources>
