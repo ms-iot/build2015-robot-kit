@@ -135,6 +135,8 @@ namespace RobotApp
                 {
                     NetworkCmd.NetworkInit(MainPage.serverHostName);
                 }
+
+                Controllers.XboxJoystickCheck();
             }
 
             //--- check on important things at a reasonable frequency
