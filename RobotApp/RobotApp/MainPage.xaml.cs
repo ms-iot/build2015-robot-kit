@@ -88,7 +88,7 @@ namespace RobotApp
 
             Controllers.XboxJoystickInit();
             NetworkCmd.NetworkInit(serverHostName);
-            if (isRobot) MotorCtrl.MotorsInit();
+            MotorCtrl.MotorsInit();
             Controllers.SetRobotDirection(Controllers.CtrlCmds.Stop, (int)Controllers.CtrlSpeeds.Max);
         }
     }

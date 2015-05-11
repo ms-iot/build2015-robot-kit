@@ -142,6 +142,7 @@ namespace RobotApp
         #region ----- Xbox HID-Controller -----
 
         private static XboxHidController controller;
+        private static int lastControllerCount = 0;
         public static async void XboxJoystickInit()
         {
             string deviceSelector = HidDevice.GetDeviceSelector(0x01, 0x05);
@@ -151,6 +152,7 @@ namespace RobotApp
             {
                 Debug.WriteLine("No Xbox360 controller found!");
             }
+            lastControllerCount = deviceInformationCollection.Count;
 
             foreach (DeviceInformation d in deviceInformationCollection)
             {
@@ -164,7 +166,7 @@ namespace RobotApp
                     {
                         var deviceAccessStatus = DeviceAccessInformation.CreateFromId(d.Id).CurrentStatus;
 
-                        if (!deviceAccessStatus.Equals(DeviceAccessStatus.Allowed))
+                        if (!deviceAccessStatus.Equals(DeviceAccessStatus.Allowed)) 
                         {
                             Debug.WriteLine("DeviceAccess: " + deviceAccessStatus.ToString());
                             FoundLocalControlsWorking = true;
@@ -181,6 +183,19 @@ namespace RobotApp
                 controller = new XboxHidController(hidDevice);
                 controller.DirectionChanged += Controller_DirectionChanged;
             }
+        }
+
+
+
+        public static async void XboxJoystickCheck()
+        {
+            string deviceSelector = HidDevice.GetDeviceSelector(0x01, 0x05);
+            DeviceInformationCollection deviceInformationCollection = await DeviceInformation.FindAllAsync(deviceSelector);
+            if (deviceInformationCollection.Count != lastControllerCount)
+            {
+                lastControllerCount = deviceInformationCollection.Count;
+                XboxJoystickInit();
+            } 
         }
 
         private static void Controller_DirectionChanged(ControllerVector sender)
@@ -218,28 +233,27 @@ namespace RobotApp
         public static CtrlCmds lastSetCmd;
         public static void SetRobotDirection(CtrlCmds cmd, int speed)
         {
-            if (MainPage.isRobot)
+            
+            switch (cmd)
             {
-                switch (cmd)
-                {
-                    case CtrlCmds.Forward:      MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms2;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms1;    break;
-                    case CtrlCmds.Backward:     MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms1;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms2;    break;
-                    case CtrlCmds.Left:         MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms1;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms1;    break;
-                    case CtrlCmds.Right:        MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms2;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms2;    break;
-                    case CtrlCmds.ForwardLeft:  MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.stop;    MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms1;    break;
-                    case CtrlCmds.ForwardRight: MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms2;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.stop;   break;
-                    case CtrlCmds.BackLeft:     MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.stop;    MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms2;    break;
-                    case CtrlCmds.BackRight:    MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms1;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.stop;   break;
-                    default:
-                    case CtrlCmds.Stop:         MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.stop;    MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.stop;   break;
-                }
-                if (speed < (int)CtrlSpeeds.Min) speed = (int)CtrlSpeeds.Min;
-                if (speed > (int)CtrlSpeeds.Max) speed = (int)CtrlSpeeds.Max;
-                MotorCtrl.speedValue = speed;
-
-                dumpOnDiff(cmd.ToString());
+                case CtrlCmds.Forward:      MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms2;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms1;    break;
+                case CtrlCmds.Backward:     MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms1;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms2;    break;
+                case CtrlCmds.Left:         MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms1;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms1;    break;
+                case CtrlCmds.Right:        MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms2;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms2;    break;
+                case CtrlCmds.ForwardLeft:  MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.stop;    MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms1;    break;
+                case CtrlCmds.ForwardRight: MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms2;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.stop;   break;
+                case CtrlCmds.BackLeft:     MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.stop;    MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.ms2;    break;
+                case CtrlCmds.BackRight:    MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.ms1;     MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.stop;   break;
+                default:
+                case CtrlCmds.Stop:         MotorCtrl.waitTimeLeft = MotorCtrl.PulseMs.stop;    MotorCtrl.waitTimeRight = MotorCtrl.PulseMs.stop;   break;
             }
-            else
+            if (speed < (int)CtrlSpeeds.Min) speed = (int)CtrlSpeeds.Min;
+            if (speed > (int)CtrlSpeeds.Max) speed = (int)CtrlSpeeds.Max;
+            MotorCtrl.speedValue = speed;
+
+            dumpOnDiff(cmd.ToString());
+            
+            if (!MainPage.isRobot)
             {
                 String sendStr = "[" + (Convert.ToInt32(cmd)).ToString() + "]:" + cmd.ToString();
                 NetworkCmd.SendCommandToRobot(sendStr);
