@@ -150,3 +150,8 @@ The kit is a starting point. Let your creativity go wild with the mechanical, el
 Make the robot kit your own. Decorate it. Improve the cutting plans. Add motors; Add sensors; Submit improvements and bug fixes! No matter what, tell us what you did with it: #MakeInventDo
 
 Thanks from the Microsoft IoT Team!
+
+
+===
+
+This project has adopted the [Microsoft Open Source Code of Conduct](http://microsoft.github.io/codeofconduct). For more information see the [Code of Conduct FAQ](http://microsoft.github.io/codeofconduct/faq.md) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments. 
